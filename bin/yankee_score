@@ -1,3 +1,5 @@
 #!/usr/bin/env ruby
+require 'bundler/setup'
 require './lib/yankee_score'
+
 YankeeScore::CLI.new.call

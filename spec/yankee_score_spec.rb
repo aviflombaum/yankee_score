@@ -5,7 +5,9 @@ describe YankeeScore do
     expect(YankeeScore::VERSION).not_to be nil
   end
 
-  it 'does something useful' do
-    expect(false).to eq(true)
+  context 'YankeeScore::CLI' do
+    it 'is defined' do
+      expect(YankeeScore::CLI).to be_a(Class)
+    end
   end
 end

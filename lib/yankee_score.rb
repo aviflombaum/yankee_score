@@ -1,2 +1,5 @@
-require_relative "yankee_score/version"
-require_relative './yankee_score/cli'
+require "yankee_score/version"
+require 'yankee_score/cli'
+
+module YankeeScore
+end

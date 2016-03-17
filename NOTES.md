@@ -1,3 +1,4 @@
+<!-- NOTE -->
 ##YankeeScore CLI Gem
 
 1. Plan your gem, imagine your interface
@@ -16,3 +17,6 @@
   1. todays game
   2. enter date
 - ask user for input
+
+
+#json http://gd2.mlb.com/components/game/mlb/year_2016/month_03/day_15/master_scoreboard.json
