@@ -1,5 +1,5 @@
 class YankeeScore::GameDay
-  attr_accessor :home_team, 
+  attr_accessor :home_team,
                 :away_team,
                 :home_team_runs,
                 :away_team_runs

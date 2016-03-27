@@ -3,6 +3,10 @@ require "pry"
 class YankeeScore::CLI
   attr_accessor :game
 
+  def initialize
+    @argument = argument
+  end
+
 
 
   def call
@@ -55,9 +59,13 @@ class YankeeScore::CLI
 
   end
 
+  def today
+    Time.new
+  end
+
   def data
-    url = "http://gd2.mlb.com/components/game/mlb/year_2016/month_03/day_27/master_scoreboard.json"
-    uri = URI.parse(url)
+    @url = "http://gd2.mlb.com/components/game/mlb/year_#{today.year}/month_#{today.strftime("%m")}/day_#{today.strftime("%d")}/master_scoreboard.json"
+    uri = URI.parse(@url)
     response = Net::HTTP.get_response(uri)
     @data = response.body
   end
@@ -65,21 +73,21 @@ class YankeeScore::CLI
 # data.games.game[8].away_name_abbrev
 
   def json
-    @json ||= JSON.parse(self.data)
+    @json ||= JSON.parse(data)
   end
 
   # json["data"]["games"]["game"].each do |team|
   # end
   def away_team
-    @away_team ||= json["data"]["games"]["game"][2]["away_name_abbrev"]
+    @away_team = json["data"]["games"]["game"][5]["away_name_abbrev"]
   end
 
   def home_team
-    @home_team ||= json["data"]["games"]["game"][2]["home_name_abbrev"]
+    @home_team ||= json["data"]["games"]["game"][5]["home_name_abbrev"]
   end
 
   def linescore
-    @linescore ||= json["data"]["games"]["game"][2]["linescore"]
+    @linescore ||= json["data"]["games"]["game"][5]["linescore"]
   end
 
   def runs
