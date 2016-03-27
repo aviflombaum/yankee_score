@@ -1,13 +1,19 @@
+require "pry"
+
 class YankeeScore::CLI
+  attr_accessor :game
+
+
 
   def call
     show_score
-    more_games
+    # more_games
   end
 
   def show_score
-    puts "Today's Scores"
-    puts "NYY 6 - BOS 3"
+    puts "Welcome to Yankee Score!"
+    # puts "Today's Scores"
+    puts "#{home_team} #{runs["home"]} - #{away_team} #{runs["away"]}"
   end
 
   def more_games
@@ -33,7 +39,7 @@ class YankeeScore::CLI
 
   def yesterdays_game
     # TODO: go to yesterday's score
-    puts "NYY 33 - BOS 3"
+    puts "#{home_team} 33 - #{away_team} 3"
   end
 
   def get_game_by_date
@@ -41,7 +47,49 @@ class YankeeScore::CLI
     date = gets.strip
     puts "Today is #{date}"
     # TODO: go to 'date' score
-    puts "NYY 9 - BOS 15 "
+    puts "#{home_team} 9 - #{away_team} 15 "
   end
+
+  def master_scoreboard
+
+
+  end
+
+  def data
+    url = "http://gd2.mlb.com/components/game/mlb/year_2016/month_03/day_27/master_scoreboard.json"
+    uri = URI.parse(url)
+    response = Net::HTTP.get_response(uri)
+    @data = response.body
+  end
+
+# data.games.game[8].away_name_abbrev
+
+  def json
+    @json ||= JSON.parse(self.data)
+  end
+
+  # json["data"]["games"]["game"].each do |team|
+  # end
+  def away_team
+    @away_team ||= json["data"]["games"]["game"][2]["away_name_abbrev"]
+  end
+
+  def home_team
+    @home_team ||= json["data"]["games"]["game"][2]["home_name_abbrev"]
+  end
+
+  def linescore
+    @linescore ||= json["data"]["games"]["game"][2]["linescore"]
+  end
+
+  def runs
+    @runs ||= linescore["r"]
+  end
+
+
+
+
+
+
 
 end

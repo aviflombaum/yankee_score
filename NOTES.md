@@ -20,3 +20,20 @@
 
 
 #json http://gd2.mlb.com/components/game/mlb/year_2016/month_03/day_15/master_scoreboard.json
+
+
+away_name_abbrev: "NYY",
+
+
+Parse json https://www.twilio.com/blog/2015/10/4-ways-to-parse-a-json-api-with-ruby.html
+
+data needed
+  home team abbrev - json["data"]["games"]["game"][2]["home_name_abbrev"]
+  away_team abbrev - json["data"]["games"]["game"][2]["away_name_abbrev"]
+
+  home team score
+  away team score
+
+  date?
+
+NYY 33 - MIN 3
