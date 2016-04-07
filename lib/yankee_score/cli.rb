@@ -1,12 +1,13 @@
 require "pry"
 
 class YankeeScore::CLI
-  attr_accessor :game
+  attr_accessor :game, :url
 
-  def initialize
-    @argument = argument
+  def initialize(home_team = nil, away_team = nil)
+    @home_team = home_team
+    @away_team = away_team
+    @date = date
   end
-
 
 
   def call
@@ -17,7 +18,12 @@ class YankeeScore::CLI
   def show_score
     puts "Welcome to Yankee Score!"
     # puts "Today's Scores"
-    puts "#{home_team} #{runs["home"]} - #{away_team} #{runs["away"]}"
+    # require "pry" ; binding.pry
+    puts score_board if find_game
+  end
+
+  def score_board
+    "#{home_team} #{runs[:home]} - #{away_team} #{runs[:away]}"
   end
 
   def more_games
@@ -54,45 +60,60 @@ class YankeeScore::CLI
     puts "#{home_team} 9 - #{away_team} 15 "
   end
 
-  def master_scoreboard
-
-
+  def date
+    @date = Date.today
   end
 
-  def today
-    Time.new
+
+  def yesterday
+    date -= 1
   end
+
 
   def data
-    @url = "http://gd2.mlb.com/components/game/mlb/year_#{today.year}/month_#{today.strftime("%m")}/day_#{today.strftime("%d")}/master_scoreboard.json"
-    uri = URI.parse(@url)
-    response = Net::HTTP.get_response(uri)
-    @data = response.body
+    unless @data
+      @url =  "http://gd2.mlb.com/components/game/mlb/year_#{date.year}/month_#{date.strftime("%m")}/day_#{date.strftime("%d")}/master_scoreboard.json"
+      uri = URI.parse(url)
+      response = Net::HTTP.get_response(uri)
+      @data = response.body
+    else
+      @data
+    end
   end
 
 # data.games.game[8].away_name_abbrev
 
   def json
-    @json ||= JSON.parse(data)
+    @json ||= JSON.parse(data, symbolize_names: true)
   end
 
-  # json["data"]["games"]["game"].each do |team|
-  # end
-  def away_team
-    @away_team = json["data"]["games"]["game"][5]["away_name_abbrev"]
+  def games
+    json[:data][:games][:game]
+  end
+
+  def find_game(team = "NYY")
+    games.find { |game|  game[:home_name_abbrev] == team || game[:away_name_abbrev]}
   end
 
   def home_team
-    @home_team ||= json["data"]["games"]["game"][5]["home_name_abbrev"]
+    find_game[:home_name_abbrev]
   end
 
-  def linescore
-    @linescore ||= json["data"]["games"]["game"][5]["linescore"]
+  def away_team
+    find_game[:away_name_abbrev]
   end
 
   def runs
-    @runs ||= linescore["r"]
+    find_game[:linescore][:r]
   end
+
+
+
+  # json["data"]["games"]["game"].each do |team|
+  # end
+
+
+
 
 
 
