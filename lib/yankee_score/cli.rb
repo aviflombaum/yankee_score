@@ -13,9 +13,14 @@ class YankeeScore::CLI
 
 
   def call
-    search("NYY")
-    puts
+    # puts "Welcome to YankeeScore"
+    # search("NYY")
     list_games
+  end
+
+  def scoreboard
+    puts "-----------"
+    puts "#{game.home_team} #{game.home_team_runs} - #{game.away_team} #{game.away_team_runs}"
   end
 
   def show_score
@@ -59,12 +64,19 @@ class YankeeScore::CLI
     puts "#{home_team} 33 - #{away_team} 3"
   end
 
-  def search(team = "NYY")
+  def search(team = nil)
     YankeeScore::Game.all.each do |game|
-      if game.home_team == team
-        puts "#{game.home_team} #{game.home_team_runs} - #{game.away_team} #{game.away_team_runs}"
+      if team == game.home_team || team == game.away_team
+        print_game(game)
       end
     end
+  end
+
+  def print_game(game)
+    puts "=============================="
+    puts " #{game.home_team} | #{game.home_team_runs || "-"}"
+    puts "-----------"
+    puts " #{game.away_team} | #{game.away_team_runs || "-"}"
   end
 
   def get_game_by_date
@@ -78,7 +90,7 @@ class YankeeScore::CLI
   def list_games
     YankeeScore::Game.all.find do |game|
       # require "pry" ; binding.pry
-      puts "#{game.home_team} #{game.home_team_runs} - #{game.away_team} #{game.away_team_runs}"
+      print_game(game)
     end
   end
 

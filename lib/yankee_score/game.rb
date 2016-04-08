@@ -12,12 +12,6 @@ class YankeeScore::Game
     @@all << self
   end
 
-  def search(team)
-    self.all.select do |game|
-      game.home_team == team
-    end
-  end
-
 
   def self.all
     @@all
