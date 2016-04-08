@@ -1,28 +1,35 @@
 require "pry"
 
 class YankeeScore::CLI
-  attr_accessor :game, :url
+  attr_accessor :game, :url, :date
+  attr_reader :score_scraper
 
-  def initialize(home_team = nil, away_team = nil)
-    @home_team = home_team
-    @away_team = away_team
-    @date = date
+  def initialize
+    @score_scraper = YankeeScore::ScoreScraper.new
+    @score_scraper.load_games
   end
+
+
 
 
   def call
-    show_score
-    # more_games
+    search("NYY")
+    puts
+    list_games
   end
 
   def show_score
-    puts "Welcome to Yankee Score!"
+
     # puts "Today's Scores"
     # require "pry" ; binding.pry
-    puts score_board if find_game
+    # score_board
+
+    # require "pry" ; binding.pry
+    puts "#{game.home_team} #{game.home_team_runs} - #{game.away_team} #{game.away_team_runs}"
   end
 
   def score_board
+    require "pry" ; binding.pry
     "#{home_team} #{runs[:home]} - #{away_team} #{runs[:away]}"
   end
 
@@ -52,6 +59,14 @@ class YankeeScore::CLI
     puts "#{home_team} 33 - #{away_team} 3"
   end
 
+  def search(team = "NYY")
+    YankeeScore::Game.all.each do |game|
+      if game.home_team == team
+        puts "#{game.home_team} #{game.home_team_runs} - #{game.away_team} #{game.away_team_runs}"
+      end
+    end
+  end
+
   def get_game_by_date
     puts "enter date (m/day/year)"
     date = gets.strip
@@ -60,52 +75,28 @@ class YankeeScore::CLI
     puts "#{home_team} 9 - #{away_team} 15 "
   end
 
-  def date
-    @date = Date.today
+  def list_games
+    YankeeScore::Game.all.find do |game|
+      # require "pry" ; binding.pry
+      puts "#{game.home_team} #{game.home_team_runs} - #{game.away_team} #{game.away_team_runs}"
+    end
   end
 
+  # :home_team,
+  #               :away_team,
+  #               :home_team_runs,
+  #               :away_team_runs,
+  #               :runs,
+  #               :start_time
+  #
+  #
+  #
 
   def yesterday
     date -= 1
   end
 
 
-  def data
-    unless @data
-      @url =  "http://gd2.mlb.com/components/game/mlb/year_#{date.year}/month_#{date.strftime("%m")}/day_#{date.strftime("%d")}/master_scoreboard.json"
-      uri = URI.parse(url)
-      response = Net::HTTP.get_response(uri)
-      @data = response.body
-    else
-      @data
-    end
-  end
-
-# data.games.game[8].away_name_abbrev
-
-  def json
-    @json ||= JSON.parse(data, symbolize_names: true)
-  end
-
-  def games
-    json[:data][:games][:game]
-  end
-
-  def find_game(team = "NYY")
-    games.find { |game|  game[:home_name_abbrev] == team || game[:away_name_abbrev]}
-  end
-
-  def home_team
-    find_game[:home_name_abbrev]
-  end
-
-  def away_team
-    find_game[:away_name_abbrev]
-  end
-
-  def runs
-    find_game[:linescore][:r]
-  end
 
 
 
