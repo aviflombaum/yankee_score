@@ -1,5 +1,6 @@
 require "pry"
 
+
 class YankeeScore::CLI
   attr_accessor :game, :url, :date
   attr_reader :score_scraper
@@ -13,58 +14,45 @@ class YankeeScore::CLI
 
 
   def call
-    # puts "Welcome to YankeeScore"
-    # search("NYY")
-    list_games
+    greet_user
+    search_team("NYY")
+    menu
+
   end
 
-  def scoreboard
-    puts "-----------"
-    puts "#{game.home_team} #{game.home_team_runs} - #{game.away_team} #{game.away_team_runs}"
+  def greet_user
+    puts "Welcome to Yankee Score CLI"
   end
 
-  def show_score
-
-    # puts "Today's Scores"
-    # require "pry" ; binding.pry
-    # score_board
-
-    # require "pry" ; binding.pry
-    puts "#{game.home_team} #{game.home_team_runs} - #{game.away_team} #{game.away_team_runs}"
-  end
-
-  def score_board
-    require "pry" ; binding.pry
-    "#{home_team} #{runs[:home]} - #{away_team} #{runs[:away]}"
-  end
-
-  def more_games
+  def menu
     input = nil
     while input != "exit"
-      puts "1. Show yesterday's score"
-      puts "2. Go to date"
+      puts
+      puts "1. Show another team"
+      puts "2. Show all teams"
+      puts
 
       input = gets.strip
 
       case input
       when "1"
-        yesterdays_game
+        puts "Enter Team name you would like to see."
+        answer = gets.strip.upcase
+        search_team(answer)
       when "2"
-        get_game_by_date
+        list_games
       when "exit"
+        puts
+        puts "It ain't over till it's over. - Yogi Berra"
+        puts
         exit
       else
-        puts "Please enter a valid date!"
+
       end
     end
   end
 
-  def yesterdays_game
-    # TODO: go to yesterday's score
-    puts "#{home_team} 33 - #{away_team} 3"
-  end
-
-  def search(team = nil)
+  def search_team(team = nil)
     YankeeScore::Game.all.each do |game|
       if team == game.home_team || team == game.away_team
         print_game(game)
@@ -73,55 +61,24 @@ class YankeeScore::CLI
   end
 
   def print_game(game)
-    puts "=============================="
-    puts " #{game.home_team} | #{game.home_team_runs || "-"}"
-    puts "-----------"
-    puts " #{game.away_team} | #{game.away_team_runs || "-"}"
-  end
-
-  def get_game_by_date
-    puts "enter date (m/day/year)"
-    date = gets.strip
-    puts "Today is #{date}"
-    # TODO: go to 'date' score
-    puts "#{home_team} 9 - #{away_team} 15 "
+    puts
+    puts "    ============"
+    puts "     #{game.away_team} | #{game.away_team_runs || "-"}"
+    puts "    -----------"
+    puts "     #{game.home_team} | #{game.home_team_runs || "-"}"
+    puts "    ============"
+    puts
+    puts "First pitch: #{game.start_time}" unless game.status == "Final"
+    puts  "#{game.inning_state} #{game.inning}"
+    puts
+    puts "Game Status: #{game.status}"
   end
 
   def list_games
     YankeeScore::Game.all.find do |game|
-      # require "pry" ; binding.pry
-      print_game(game)
+      puts "#{game.home_team} #{game.home_team_runs || "-"}  #{game.away_team} #{game.away_team_runs}"
     end
   end
-
-  # :home_team,
-  #               :away_team,
-  #               :home_team_runs,
-  #               :away_team_runs,
-  #               :runs,
-  #               :start_time
-  #
-  #
-  #
-
-  def yesterday
-    date -= 1
-  end
-
-
-
-
-
-  # json["data"]["games"]["game"].each do |team|
-  # end
-
-
-
-
-
-
-
-
 
 
 end

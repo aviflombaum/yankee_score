@@ -37,3 +37,12 @@ data needed
   date?
 
 NYY 33 - MIN 3
+
+
+1. greet user
+2. show Yankee Score
+3. ask user for input
+  options:
+  - show another team
+  - show all teams
+TODO: add option to go to game on MLB.com

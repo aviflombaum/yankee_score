@@ -4,7 +4,10 @@ class YankeeScore::Game
                 :home_team_runs,
                 :away_team_runs,
                 :runs,
-                :start_time
+                :start_time,
+                :status,
+                :inning,
+                :inning_state
   @@all = []
 
 
