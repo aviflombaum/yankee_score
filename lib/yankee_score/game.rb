@@ -1,13 +1,16 @@
 class YankeeScore::Game
   attr_accessor :home_team,
                 :away_team,
-                :home_team_runs,
-                :away_team_runs,
-                :runs,
                 :start_time,
                 :status,
                 :inning,
                 :inning_state
+
+  def initialize(home_team, away_team)
+    @home_team = home_team
+    @away_team = away_team
+  end
+
   @@all = []
 
 
