@@ -11,11 +11,9 @@ class YankeeScore::CLI
 
 
   def call
-    system("clear")
     greet_user
     search_team("NYY")
     menu
-
   end
 
   def greet_user
@@ -36,7 +34,7 @@ class YankeeScore::CLI
         list_games
         puts "Enter Team initials to select team."
         answer = gets.strip.upcase
-        system("clear")
+
         search_team(answer)
       when "2"
         print_games
@@ -67,7 +65,7 @@ class YankeeScore::CLI
     puts "     #{game.home_team.name} | #{game.home_team.runs || "-"}"
     puts "    ============"
     puts
-    puts "First pitch: #{game.start_time}" unless game.is_over?
+    puts "Game Start: #{game.start_time}" unless game.is_over?
 
     puts  "#{game.inning_state} #{game.inning.to_i.ordinalize}" if game.is_active?
 
