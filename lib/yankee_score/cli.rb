@@ -48,10 +48,9 @@ class YankeeScore::CLI
   end
 
   def search_team(team = nil)
-    YankeeScore::Game.all.each do |game|
-      if team == game.home_team.name || team == game.away_team.name
-        print_game(game)
-      end
+    team_games = YankeeScore::Game.find_by_team(team)
+    team_games.each do |game|
+      print_game(game)
     end
   end
 
@@ -99,7 +98,7 @@ class YankeeScore::CLI
 
   def list_games
     YankeeScore::Game.all.each do |game|
-      puts "  #{game.away_team.name} @ #{game.home_team.name} #{game.score || game.start_time}"
+      puts "  #{game.away_team.name} @ #{game.home_team.name} #{game.summary}"
     end
   end
 

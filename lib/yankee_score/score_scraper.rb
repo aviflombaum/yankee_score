@@ -10,8 +10,11 @@ class YankeeScore::ScoreScraper
     @date = Date.today
   end
 
+  def build_url(date = Date.today)
+    "#{@@base_url}year_#{date.year}/month_#{date.strftime("%m")}/day_#{date.strftime("%d")}/master_scoreboard.json"
+  end
   def data
-      url = "#{@@base_url}year_#{date.year}/month_#{date.strftime("%m")}/day_#{date.strftime("%d")}/master_scoreboard.json"
+      url =
       uri = URI.parse(url)
       response = Net::HTTP.get_response(uri)
       @data = response.body
@@ -33,23 +36,7 @@ class YankeeScore::ScoreScraper
 
   def load_games
     games.each do |game_hash|
-      g = YankeeScore::Game.new(YankeeScore::Team.new(game_hash[:home_name_abbrev]), YankeeScore::Team.new(game_hash[:away_name_abbrev]))
-
-
-      g.start_time = game_hash[:time]
-      g.status = game_hash[:status][:status]
-      g.inning = game_hash[:status][:inning]
-      g.inning_state = game_hash[:status][:inning_state]
-
-      # g.matchup = game_hash[:game_media][:media][:title]
-
-      if game_hash.has_key?(:linescore)
-        g.home_team.runs = game_hash[:linescore][:r][:home]
-        g.away_team.runs = game_hash[:linescore][:r][:away]
-        g.score = "#{g.away_team.runs} - #{g.home_team.runs}"
-      end
-
-      g.save
+      g =YankeeScore::Game.create_from_json(game_hash)
     end
   end
 
