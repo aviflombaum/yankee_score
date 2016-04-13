@@ -46,3 +46,7 @@ NYY 33 - MIN 3
   - show another team
   - show all teams
 TODO: add option to go to game on MLB.com
+
+    ==========================
+    Yankee Score instructions
+    ==========================
