@@ -4,7 +4,9 @@ class YankeeScore::Game
                 :start_time,
                 :status,
                 :inning,
-                :inning_state
+                :inning_state,
+                :score
+
 
   def initialize(home_team, away_team)
     @home_team = home_team
@@ -13,10 +15,19 @@ class YankeeScore::Game
 
   @@all = []
 
-
   def save
     @@all << self
   end
+
+  def is_over?
+    self.status == ("Final" || "Postponed")
+  end
+
+  def is_active?
+    not_active = ["Pre-Game","Preview", "Warmup"]
+    self.inning.to_i >= 1 && !is_over?  not_active.include?(status)
+  end
+
 
 
   def self.all
