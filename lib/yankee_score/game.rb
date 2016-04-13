@@ -20,7 +20,7 @@ class YankeeScore::Game
   end
 
   def is_over?
-    self.status == "Final" || self.status == "Postponed"
+    self.status == "Final" || self.status == "Postponed" || self.status == "Game Over"
   end
 
   def is_active?
