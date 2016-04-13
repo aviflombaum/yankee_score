@@ -1,9 +1,6 @@
 require "pry"
-
-
 class YankeeScore::CLI
-  attr_accessor :game, :url, :date
-  attr_reader :score_scraper
+  attr_accessor :game
 
   def initialize
     @score_scraper = YankeeScore::ScoreScraper.new
@@ -14,6 +11,7 @@ class YankeeScore::CLI
 
 
   def call
+    system("clear")
     greet_user
     search_team("NYY")
     menu
@@ -28,23 +26,22 @@ class YankeeScore::CLI
     input = nil
     while input != "exit"
       puts
-      puts "1. Show another team"
+      puts "1. Search another team"
       puts "2. Show all teams"
-      puts
 
       input = gets.strip
 
       case input
       when "1"
-        puts "Enter Team name you would like to see."
+        list_games
+        puts "Enter Team initials to select team."
         answer = gets.strip.upcase
+        system("clear")
         search_team(answer)
       when "2"
-        list_games
+        print_games
       when "exit"
-        puts
-        puts "It ain't over till it's over. - Yogi Berra"
-        puts
+        bye_message
         exit
       else
 
@@ -54,29 +51,57 @@ class YankeeScore::CLI
 
   def search_team(team = nil)
     YankeeScore::Game.all.each do |game|
-      if team == game.home_team || team == game.away_team
+      if team == game.home_team.name || team == game.away_team.name
         print_game(game)
       end
     end
   end
 
+
+
   def print_game(game)
     puts
     puts "    ============"
-    puts "     #{game.away_team} | #{game.away_team_runs || "-"}"
+    puts "     #{game.away_team.name} | #{game.away_team.runs || "-"}"
     puts "    -----------"
-    puts "     #{game.home_team} | #{game.home_team_runs || "-"}"
+    puts "     #{game.home_team.name} | #{game.home_team.runs || "-"}"
     puts "    ============"
     puts
-    puts "First pitch: #{game.start_time}" unless game.status == "Final"
-    puts  "#{game.inning_state} #{game.inning}"
+    puts "First pitch: #{game.start_time}" unless game.is_over?
+
+    puts  "#{game.inning_state} #{game.inning.to_i.ordinalize}" if game.is_active?
+
+
     puts
     puts "Game Status: #{game.status}"
   end
 
+
+
+
+
+  def print_games
+    YankeeScore::Game.all.each do |game|
+      puts "==============================="
+      print_game(game)
+      puts "==============================="
+    end
+  end
+
+  def bye_message
+    puts
+    puts "Bye!"
+    puts
+    sleep 0.5
+    puts "+----------------------------------------------+"
+    puts "|  It ain't over till it's over. - Yogi Berra  |"
+    puts "+----------------------------------------------+"
+    puts
+  end
+
   def list_games
-    YankeeScore::Game.all.find do |game|
-      puts "#{game.home_team} #{game.home_team_runs || "-"}  #{game.away_team} #{game.away_team_runs}"
+    YankeeScore::Game.all.each do |game|
+      puts "  #{game.away_team.name} @ #{game.home_team.name} #{game.score || game.start_time}"
     end
   end
 
