@@ -20,12 +20,12 @@ class YankeeScore::Game
   end
 
   def is_over?
-    self.status == ("Final" || "Postponed")
+    self.status == "Final" || self.status == "Postponed"
   end
 
   def is_active?
     not_active = ["Pre-Game","Preview", "Warmup"]
-    self.inning.to_i >= 1 && !is_over?  not_active.include?(status)
+    self.inning.to_i >= 1 && !is_over? && !not_active.include?(status)
   end
 
 
